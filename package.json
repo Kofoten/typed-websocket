@@ -16,5 +16,10 @@
   "dependencies": {
     "uuid": "^3.3.2",
     "ws": "^7.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Kofoten/typed-websocket.git"
+  },
+  "homepage": "https://github.com/Kofoten/typed-websocket"
 }
