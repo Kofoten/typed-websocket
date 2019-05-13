@@ -10,20 +10,26 @@ const uuidv4 = require('uuid/v4')
 class Server extends EventEmitter {
   /**
    * Creates a new server
-   * @param {number} port The listening port
-   * @param {boolean} greeting Send greetings to new clients
+   * @param {object} options Standard WebSocket options
    */
-  constructor(port, greeting = true) {
+  constructor(options = null) {
     super()
-    this.port = port
-    this.greeting = greeting
+
+    if (options === null) {
+      this.options = {
+        port: 3000,
+        greeting: true
+      }
+    } else {
+      this.options = options
+    }
   }
 
   /**
    * Starts the server
    */
   listen() {
-    this.server = new WebSocket.Server({ port: this.port })
+    this.server = new WebSocket.Server(this.options)
 
     this.server.on('listening', () => {
       this.emit('listening')
@@ -33,27 +39,41 @@ class Server extends EventEmitter {
       this.emit('error', err)
     })
 
+    this.server.on('headers', headers => {
+      this.emit('headers', headers)
+    })
+
     this.server.on('connection', ws => {
       ws.clientId = uuidv4()
 
-      if (this.greeting) {
+      if (this.options.greeting) {
         ws.send(this.createMessage('greeting', { clientId: ws.clientId }))
       }
 
       ws.on('message', serializedMessage => {
-        const message = JSON.parse(serializedMessage)
+        try {
+          const message = JSON.parse(serializedMessage)
 
-        if (typeof message.type !== 'string') {
-          this._emitError('data is not of type object', ws)
-          return
+          if (typeof message.type !== 'string') {
+            this._emitError('data is not of type object', ws)
+            return
+          }
+
+          if (typeof message.data !== 'object') {
+            this._emitError('data is not of type object', ws)
+            return
+          }
+
+          this.emit(`type:${message.type}`, {
+            messageId: uuidv4(),
+            clientId: ws.clientId,
+            time: Date.now(),
+            data: message.data
+          })
+        } catch (error) {
+          ws.emit(this.createMessage('error', error))
+          this.emit('error', error)
         }
-
-        if (typeof data !== 'object') {
-          this._emitError('data is not of type object', ws)
-          return
-        }
-
-        this.emit(message.type, { messageId: uuidv4(), clientId: ws.clientId, time: Date.now(), data: message.data })
       })
     })
   }
