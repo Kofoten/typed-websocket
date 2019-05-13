@@ -1,10 +1,20 @@
 {
   "name": "typed-websocket",
-  "version": "0.2.0",
+  "version": "2.1.1",
   "description": "WebSockets with typed messages",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "bracketSpacing": true,
+    "endOfLine": "lf",
+    "arrowParens": "always"
   },
   "keywords": [
     "websocket",
@@ -15,12 +25,16 @@
   "author": "rasmus@steen.ninja",
   "license": "ISC",
   "dependencies": {
-    "uuid": "^3.3.2",
     "ws": "^7.0.0"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:Kofoten/typed-websocket.git"
   },
-  "homepage": "https://github.com/Kofoten/typed-websocket"
+  "homepage": "https://github.com/Kofoten/typed-websocket",
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.2.0",
+    "prettier": "^1.17.1"
+  }
 }

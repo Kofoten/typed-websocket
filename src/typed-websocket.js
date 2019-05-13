@@ -1,38 +1,30 @@
 'use strict'
 
 const WebSocket = require('ws')
-const helper = require('./helper')
 
 /**
- * A typed WebSocket
+ * Class representing a TypedWebSocket.
+ *
+ * @extends WebSocket
  */
 class TypedWebSocket extends WebSocket {
   /**
-   * Creates a new TypedWebSocket
-   * @param {string} address
-   * @param {WebSocket.ClientOptions} options
+   * Create a new `TypedWebSocket`.
+   *
+   * @param {(String|url.URL)} address The URL to which to connect
+   * @param {(String|String[])} protocols The subprotocols
+   * @param {Object} options Connection options
    */
-  constructor(address, options = null) {
-    super(address, options)
-    this._init();
-  }
-
-  /**
-   * Creates a new TypedWebSocket
-   * @param {string} address
-   * @param {string|string[]} protocols
-   * @param {WebSocket.ClientOptions} options
-   */
-  constructor(address, protocols = null, options = null) {
+  constructor(address, protocols, options) {
     super(address, protocols, options)
-    this._init();
+    this._init()
   }
 
   /**
    * Initializes the type listener
    */
   _init() {
-    this.on('message', raw => {
+    this.on('message', (raw) => {
       try {
         const message = JSON.parse(raw)
 
@@ -66,8 +58,25 @@ class TypedWebSocket extends WebSocket {
    * @param {Error} error Error object
    */
   _emitError(error) {
-    this.send(helper.createMessage('error', error))
+    this.send(this.createMessage('error', error))
     this.emit('error', error)
+  }
+
+  /**
+   * Creates a message with type and data
+   * @param {string} type The message type
+   * @param {object} data The message data
+   */
+  createMessage(type, data) {
+    if (typeof type !== 'string') {
+      throw new Error('type is not of type string')
+    }
+
+    if (typeof data !== 'object') {
+      throw new Error('data is not of type object')
+    }
+
+    return JSON.stringify({ type, data })
   }
 }
 

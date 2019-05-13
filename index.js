@@ -1,5 +1,9 @@
 'use strict'
 
-const Server = require('./src/server')
+const TypedWebSocket = require('./src/typed-websocket')
 
-module.exports = { Server }
+const TypedServer = require('./src/typed-websocket-server')
+
+TypedWebSocket.Server = TypedServer
+
+module.exports = TypedWebSocket
