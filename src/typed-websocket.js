@@ -22,6 +22,7 @@ class TypedWebSocket extends WebSocket {
 
   /**
    * Initializes the type listener
+   * @private
    */
   _init() {
     this.on('message', (raw) => {
@@ -48,6 +49,7 @@ class TypedWebSocket extends WebSocket {
   /**
    * Sends an error to WebSocket and emits error
    * @param {string} message Error message
+   * @private
    */
   _emitNewError(message) {
     this._emitError(new Error(message))
@@ -56,6 +58,7 @@ class TypedWebSocket extends WebSocket {
   /**
    * Sends an error to WebSocket and emits error
    * @param {Error} error Error object
+   * @private
    */
   _emitError(error) {
     this.send(this.createMessage('error', error))
@@ -63,9 +66,30 @@ class TypedWebSocket extends WebSocket {
   }
 
   /**
+   * Send a data message.
+   *
+   * @param {string} type The message type
+   * @param {Object} data The message to send
+   * @param {Object} options Options object
+   * @param {Boolean} options.compress Specifies whether or not to compress
+   *     `data`
+   * @param {Boolean} options.binary Specifies whether `data` is binary or text
+   * @param {Boolean} options.fin Specifies whether the fragment is the last one
+   * @param {Boolean} options.mask Specifies whether or not to mask `data`
+   * @param {Function} cb Callback which is executed when data is written out
+   * @public
+   */
+  sendt(type, data, options, cb) {
+    const message = this.createMessage(type, data)
+
+    this.send(message, options, cb)
+  }
+
+  /**
    * Creates a message with type and data
    * @param {string} type The message type
    * @param {object} data The message data
+   * @public
    */
   createMessage(type, data) {
     if (typeof type !== 'string') {
