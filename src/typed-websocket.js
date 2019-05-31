@@ -175,18 +175,18 @@ function receiverOnMessage(data) {
     const parsedData = JSON.parse(data)
 
     if (typeof parsedData.type !== 'string') {
-      onMessageTypeError('Type is not a string', data)
+      onMessageTypeError.call(this, 'Type is not a string', data)
       return
     }
 
     if (typeof parsedData.data !== 'object') {
-      onMessageTypeError('Data is not an object', data)
+      onMessageTypeError.call(this, 'Data is not an object', data)
       return
     }
 
     this[kWebSocket].emit(`type:${parsedData.type}`, parsedData.data)
   } catch (error) {
-    onMessageTypeError(error, data)
+    onMessageTypeError.call(this, error, data)
   }
 }
 
