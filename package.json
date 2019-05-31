@@ -1,6 +1,6 @@
 {
   "name": "typed-websocket",
-  "version": "2.1.2",
+  "version": "2.2.4",
   "description": "WebSockets with typed messages",
   "main": "index.js",
   "scripts": {
